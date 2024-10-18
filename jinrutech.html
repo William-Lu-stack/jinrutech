@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上海近如科技有限公司</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            height: 100%;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 10px 0;
+        }
+        .contact {
+            margin-top: 30px;
+            font-size: 1.1em;
+        }
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff, 0 0 20px #0ff;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff, 0 0 40px #0ff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <div class="container">
+        <h1 class="glow">上海近如科技有限公司</h1>
+        <p>我们专注于开发定制化的软件解决方案，以满足客户的多样化需求，并提供全面的销售与技术支持服务。
+
+</p>
+        <p>在人工智能领域，我们致力于为企业提供智能化的软件解决方案，助力企业实现数字化转型，提升业务效率。</p>
+        <div class="contact">
+            <p>联系我们：</p>
+            <p>Email: luxy@jinrutech.com</p>
+            <p>电话: 18616350794</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        const numStars = 200;
+        const nebulae = [];
+        const numNebulae = 3;
+
+        // 创建星星
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                vx: Math.floor(Math.random() * 50) - 25,
+                vy: Math.floor(Math.random() * 50) - 25
+            });
+        }
+
+        // 创建星云
+        for (let i = 0; i < numNebulae; i++) {
+            nebulae.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 100 + 50,
+                hue: Math.random() * 60 + 180, // 蓝色到青色范围
+                opacity: 0
+            });
+        }
+
+        function drawStars() {
+            ctx.fillStyle = '#ffffff';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false);
+                ctx.fill();
+            });
+        }
+
+        function drawNebulae() {
+            nebulae.forEach(nebula => {
+                const gradient = ctx.createRadialGradient(nebula.x, nebula.y, 0, nebula.x, nebula.y, nebula.radius);
+                gradient.addColorStop(0, `hsla(${nebula.hue}, 100%, 60%, ${nebula.opacity})`);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2, false);
+                ctx.fill();
+            });
+        }
+
+        function updateStars() {
+            stars.forEach(star => {
+                star.x += star.vx / 30;
+                star.y += star.vy / 30;
+                if (star.x < 0 || star.x > canvas.width) star.vx = -star.vx;
+                if (star.y < 0 || star.y > canvas.height) star.vy = -star.vy;
+            });
+        }
+
+        function updateNebulae() {
+            nebulae.forEach(nebula => {
+                nebula.opacity = Math.sin(Date.now() / 3000) * 0.3 + 0.3; // 使星云闪烁
+            });
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 10, 30, 0.2)'; // 深蓝色背景
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            drawNebulae();
+            drawStars();
+        }
+
+        function animate() {
+            draw();
+            updateStars();
+            updateNebulae();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
